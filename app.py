@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
-import plotly.express as px
 
 # Configure page
 st.set_page_config(
@@ -257,25 +256,27 @@ def main():
         st.markdown(progress_html, unsafe_allow_html=True)
     
     with col2:
-        # Mini chart
+        # Status breakdown with visual indicators
         status_counts = df['Status'].value_counts()
-        fig = px.pie(
-            values=status_counts.values, 
-            names=status_counts.index,
-            color_discrete_map={
-                'Completed': '#6BCF7F',
-                'In Progress': '#FFD93D', 
-                'Pending': '#FF6B6B'
-            },
-            height=200
-        )
-        fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            showlegend=False,
-            margin=dict(l=0, r=0, t=0, b=0)
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        st.markdown("**📊 Task Status:**")
+        
+        for status, count in status_counts.items():
+            percentage = (count / len(df)) * 100
+            if status == 'Completed':
+                color = "#6BCF7F"
+                emoji = "✅"
+            elif status == 'In Progress':
+                color = "#FFD93D" 
+                emoji = "🔄"
+            else:
+                color = "#FF6B6B"
+                emoji = "⏳"
+            
+            st.markdown(f"""
+            <div style="margin: 5px 0; padding: 8px; background-color: {color}20; border-radius: 5px; border-left: 4px solid {color};">
+                {emoji} <strong>{status}:</strong> {count} ({percentage:.0f}%)
+            </div>
+            """, unsafe_allow_html=True)
     
     # Task filters
     st.markdown('<div class="section-header">📋 Your Assigned Tasks</div>', unsafe_allow_html=True)
