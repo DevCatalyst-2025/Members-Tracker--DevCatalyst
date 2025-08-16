@@ -52,6 +52,7 @@ st.markdown("""
         border: 2px solid #E6DCC6;
         margin-bottom: 2rem;
         text-align: center;
+        color: #8B4513;
     }
     
     .task-card {
@@ -62,6 +63,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease;
+        color: #8B4513;
     }
     
     .task-card:hover {
@@ -112,6 +114,7 @@ st.markdown("""
         border-radius: 10px;
         border: 1px solid #E6DCC6;
         text-align: center;
+        color: #8B4513;
     }
     
     .metric-number {
@@ -341,7 +344,7 @@ def main():
                     </div>
                 </div>
                 
-                <p style="color: #666; margin: 10px 0;">{task['Description']}</p>
+                <p style="color: #8B4513; margin: 10px 0;">{task['Description']}</p>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #E6DCC6;">
                     <div>
