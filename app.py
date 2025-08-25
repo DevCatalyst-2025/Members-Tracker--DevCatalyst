@@ -2,13 +2,24 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 
-# Configure page
+# -----------------------------
+# PAGE CONFIG
+# -----------------------------
 st.set_page_config(
-    page_title="DevCatalyst - Member Portal",
+    page_title="DevCatalyst Portal",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# -----------------------------
+# USERS (Hardcoded Example)
+# -----------------------------
+users = {
+    "Representatives": {"rep1": "rep123", "rep2": "hello123"},
+    "Members": {"mem1": "mem123", "mem2": "welcome123"},
+    "Admin": {"admin": "admin123"}
+}
 
 # Custom CSS for beige theme and styling
 st.markdown("""
@@ -136,6 +147,26 @@ st.markdown("""
         border-bottom: 3px solid #DEB887;
         padding-bottom: 0.5rem;
     }
+
+    /* Button */
+    .stButton>button {
+        background: #8B4513;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        padding: 0.6rem 1.5rem;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background: #A0522D;
+        transform: scale(1.05);
+    }
+    
+    /* Change form labels to brown */
+    .stMarkdown h3, .stTextInput label, .stSelectbox label {
+        color: #8B4513 !important;
+        font-weight: bold;
+    } 
 </style>
 """, unsafe_allow_html=True)
 
@@ -178,7 +209,7 @@ def get_priority_emoji(priority):
     }
     return priority_emojis.get(priority, '⚪')
 
-def main():
+def dashboard(username,role):
     # Header
     st.markdown("""
     <div class="header-container">
@@ -385,5 +416,63 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    main()
+# -----------------------------
+# LOGIN FUNCTION
+def login():
+    # --- Page Config ---
+    st.set_page_config(page_title="DevCatalyst Login", page_icon="⚡", layout="centered")
+
+    # --- Header ---
+    st.markdown("""
+    <div class="header-container">
+        <div class="club-title">⚡ DevCatalyst</div>
+        <div class="club-subtitle">Accelerating Developer Growth</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+
+    # --- Title ---
+    st.markdown("### 🔑 Login to your account")
+
+    # --- Hardcoded Users ---
+    users = {
+        "Representatives": {"rep1": "rep123", "rep2": "hello123"},
+        "Members": {"mem1": "mem123", "mem2": "welcome123"},
+        "Admin": {"admin": "admin123"}
+    }
+
+    # --- Role Selection ---
+    role = st.selectbox(
+        "Select Your Role",
+        ["Representatives", "Members", "Admin"],
+        index=None,   # nothing selected by default
+          # greyed out placeholder
+    )
+
+    # --- Username & Password Inputs ---
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        if role in users and username in users[role]:
+            if users[role][username] == password:
+                st.session_state["logged_in"] = True
+                st.session_state["username"] = username
+                st.session_state["role"] = role
+                st.success("✅ Login successful!")
+                st.rerun()
+            else:
+                st.error("❌ Incorrect password.")
+        else:
+            st.error("❌ Invalid username for the selected role.")
+
+# -----------------------------
+# MAIN APP FLOW
+# -----------------------------
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
+if st.session_state["logged_in"]:
+    dashboard(st.session_state["username"], st.session_state["role"])
+else:
+    login()
